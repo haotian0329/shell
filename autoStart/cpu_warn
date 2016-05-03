@@ -1,0 +1,58 @@
+#!/bin/bash  
+# chkconfig: 2345 90 10  
+# description: cpu_warn service 
+
+# start and stop functions  
+
+SERVICE_PATH="/home/ubuntu/XDSecurity/start_shell"
+NOHUP_PATH="/home/ubuntu/XDSecurity/log"
+
+start() {  
+      
+    DATE=`date +%Y%m%d`
+    pids=`ps -ef|grep cpu_warn.sh|grep -v grep|awk '{print $2}'`  
+    if [ -n "$pids" ]; then       
+         echo  "cpu_warn SERVICE ALREADY START!"  
+    else  
+         echo "START cpu_warn SERVICE ..."  
+         nohup $SERVICE_PATH/cpu_warn.sh > $NOHUP_PATH/cpu_warn-$DATE 2>&1 &
+         echo  "START cpu_warn SERVICE SUCCESS!" 
+    fi  
+}  
+
+
+stop() {  
+       
+    pids=`ps -ef|grep cpu_warn|grep -v grep|grep -v start|grep -v cpu_warn.sh|awk '{print $2}'`  
+    if [ -n "$pids" ]; then  
+            echo  "STOP cpu_warn SERVICE ... "  
+            kill -s 9 $pids  
+            echo  "STOP cpu_warn SERVICE SUCCESS! "  
+    else  
+            echo  "cpu_warn SERVICE ALREADY STOP! "  
+    fi  
+}  
+
+
+case "$1" in  
+  
+  start)    
+        start   
+        ;;  
+  
+  stop)  
+        stop 
+        ;;  
+  
+  restart)   
+        stop   
+        sleep 2           
+        start  
+        ;;  
+  
+  *)  
+        echo "Usage: $0 {start|stop|restart}"  
+        exit 1  
+  
+esac  
+
