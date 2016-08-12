@@ -1,0 +1,20 @@
+DIR_INC=include
+DIR_SRC=src
+VPATH=${DIR_INC}:${DIR_SRC}
+CFLAGS = -g -Wall -I${DIR_INC} -O2
+OBJS=test.o qsort_arg.o test_int.o test_string.o
+
+QsortCmp: $(OBJS)
+	g++ -o $@ $^
+test.o: test.cpp test_int.h test_string.h
+	g++ $(CFLAGS) -c $^ 
+test_int.o: test_int.cpp test_int.h
+	g++ $(CFLAGS) -c $^	
+test_string.o: test_string.cpp test_string.h
+	g++ $(CFLAGS) -c $^	
+qsort_arg.o: qsort_arg.c qsort_arg.h
+	gcc $(CFLAGS) -c $^
+
+.PHONY:clean
+clean:
+	-rm QsortCmp $(OBJS)
